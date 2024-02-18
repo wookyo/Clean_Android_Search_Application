@@ -38,14 +38,16 @@ class MovieSearchViewModel @Inject constructor(
     private val _toastMsg = MutableLiveData<MessageSet>()
     val toastMsg: LiveData<MessageSet> get() = _toastMsg
 
+    enum class MessageSet {
+        LAST_PAGE,
+        EMPTY_QUERY,
+        NETWORK_NOT_CONNECTED,
+        ERROR,
+        SUCCESS,
+        NO_RESULT,
+        LOCAL_SUCCESS
+    }
 
-    /**
-     * 2023. 10. 31
-     * 해당 API를 통해 가져오는 데이터가 항상 비어있습니다.
-     *
-     * 정상 동작을 하는 것을 확인하였고, 문제가 없기 때문에
-     * 다른 Sample API를 사용하여 Item List를 보여주면 됩니다.
-     */
     // 영화 검색
     fun requestMovie() {
         currentQuery = query.value.toString().trim()
@@ -91,7 +93,6 @@ class MovieSearchViewModel @Inject constructor(
                 .onStart { showProgress() }
                 .onCompletion { hideProgress() }
                 .catch {
-                    Log.d("dataCheck", "Error ? $it")
                     _toastMsg.value = MessageSet.ERROR
                 }
                 .collect { movies ->
@@ -158,13 +159,5 @@ class MovieSearchViewModel @Inject constructor(
         )
     }
 
-    enum class MessageSet {
-        LAST_PAGE,
-        EMPTY_QUERY,
-        NETWORK_NOT_CONNECTED,
-        ERROR,
-        SUCCESS,
-        NO_RESULT,
-        LOCAL_SUCCESS
-    }
+
 }
