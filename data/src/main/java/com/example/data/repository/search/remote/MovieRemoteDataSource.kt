@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MovieRemoteDataSource {
 
-    fun getSearchMoviesFlow(
+    fun getSearchMovies(
         query: String,
         start: Int = 1
     ): Flow<MovieResponse>

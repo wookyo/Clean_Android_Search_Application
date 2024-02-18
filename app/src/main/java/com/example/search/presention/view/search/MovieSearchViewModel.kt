@@ -46,7 +46,7 @@ class MovieSearchViewModel @Inject constructor(
         LOCAL_SUCCESS
     }
 
-    fun requestMovieFlow() {
+    fun requestMovie() {
         currentQuery = query.value.toString().trim()
         if (currentQuery.isEmpty()) {
             _toastMsg.value = MessageSet.EMPTY_QUERY

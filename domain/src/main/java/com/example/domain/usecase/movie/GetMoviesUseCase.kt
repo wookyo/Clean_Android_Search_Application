@@ -11,7 +11,7 @@ class GetMoviesUseCase @Inject constructor(private val repository: MovieReposito
 
     fun getFlowData(
         query: String,
-    ): Flow<List<Movie>> = repository.getSearchMoviesFlow(query)
+    ): Flow<List<Movie>> = repository.getSearchMovies(query)
 
      fun getFlowData(
         query: String,

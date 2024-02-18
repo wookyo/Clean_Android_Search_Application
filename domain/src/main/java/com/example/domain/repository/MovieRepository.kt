@@ -8,7 +8,7 @@ import io.reactivex.Single
 
 interface MovieRepository {
 
-    fun getSearchMoviesFlow(
+    fun getSearchMovies(
         query: String
     ): Flow<List<Movie>>
 

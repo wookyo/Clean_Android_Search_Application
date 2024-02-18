@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface ApiInterface {
 
     @GET(ApiClient.BASE_URL)
-    suspend fun getSearchMovieFlow(
+    suspend fun getSearchMovies(
         @Query(APIConstants.SEARCH_QUERY) query: String,
         @Query(APIConstants.SEARCH_PAGE) start: Int = 0
     ): MovieResponse

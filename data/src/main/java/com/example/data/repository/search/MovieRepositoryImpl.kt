@@ -18,15 +18,14 @@ class MovieRepositoryImpl @Inject constructor(
     private val movieLocalDataSource: MovieLocalDataSource,
 ) : MovieRepository {
 
-    override fun getSearchMoviesFlow(query: String): Flow<List<Movie>> {
+    override fun getSearchMovies(query: String): Flow<List<Movie>> {
         return flow {
-            movieRemoteDataSource.getSearchMoviesFlow(query).collect {
+            movieRemoteDataSource.getSearchMovies(query).collect {
                 emit(mapperToMovie(it.items))
             }
         }
     }
 
-    // 네트워크 연결이 안되는 경우 로컬에서 검색
     override fun getLocalSearchMovies(query: String): Flow<List<Movie>> {
         return flow{
             movieLocalDataSource.getSearchMovies(query).collect {
@@ -35,16 +34,13 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
-
-
-
     //영화 검색 후 스크롤 내리면 영화 더 불러오기
     override fun getPagingMovies(
         query: String,
         offset: Int,
     ): Flow<List<Movie>> {
         return flow{
-            movieRemoteDataSource.getSearchMoviesFlow(query,offset).collect {
+            movieRemoteDataSource.getSearchMovies(query,offset).collect {
                 emit(mapperToMovie(it.items))
             }
         }

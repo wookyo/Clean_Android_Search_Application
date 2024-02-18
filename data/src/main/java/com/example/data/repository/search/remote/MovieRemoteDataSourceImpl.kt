@@ -10,9 +10,9 @@ import javax.inject.Inject
 class MovieRemoteDataSourceImpl @Inject constructor(private val apiInterface: ApiInterface) :
     MovieRemoteDataSource {
 
-    override fun getSearchMoviesFlow(query: String, start: Int): Flow<MovieResponse> {
+    override fun getSearchMovies(query: String, start: Int): Flow<MovieResponse> {
         return flow {
-            emit(apiInterface.getSearchMovieFlow(query, start))
+            emit(apiInterface.getSearchMovies(query, start))
         }
     }
 }
