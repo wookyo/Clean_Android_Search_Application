@@ -6,12 +6,6 @@ import retrofit2.http.Query
 
 interface KtorInterface {
 
-//    suspend fun requestMoveSearchData(
-//        query: String,
-//        start: Int = 1,
-//        display: Int = 15,
-//    ): Flow<MovieResponse>
-
     suspend fun requestMoveSearchData(
          query: String,
          start: Int = 0

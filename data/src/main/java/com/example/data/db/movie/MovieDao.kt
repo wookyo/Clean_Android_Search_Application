@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.example.data.model.movie.MovieEntity
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDao {
@@ -15,10 +16,10 @@ interface MovieDao {
     fun insertMovies(movies: List<MovieEntity>): Completable
 
     @Query("SELECT * FROM movie")
-    fun getAllMovies(): Single<List<MovieEntity>>
+    fun getAllMovies(): Flow<List<MovieEntity>>
 
     @Query("SELECT * FROM movie WHERE title LIKE '%' || :title || '%'")
-    fun getMoviesByTitle(title: String): Single<List<MovieEntity>>
+    fun getMoviesByTitle(title: String): Flow<List<MovieEntity>>
 
     @Query("DELETE FROM movie")
     fun deleteAllMovies(): Completable
