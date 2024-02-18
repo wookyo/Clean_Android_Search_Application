@@ -73,9 +73,8 @@ object DataModule {
     @Provides
     fun provideMovieRepository(
         movieRemoteDataSource: MovieRemoteDataSource,
-        movieLocalDataSource: MovieLocalDataSource,
-        ktorInterface: KtorInterface,
+        movieLocalDataSource: MovieLocalDataSource
     ): MovieRepository {
-        return MovieRepositoryImpl(movieRemoteDataSource, movieLocalDataSource, ktorInterface)
+        return MovieRepositoryImpl(movieRemoteDataSource, movieLocalDataSource)
     }
 }

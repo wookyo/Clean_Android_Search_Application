@@ -16,7 +16,6 @@ import javax.inject.Inject
 class MovieRepositoryImpl @Inject constructor(
     private val movieRemoteDataSource: MovieRemoteDataSource,
     private val movieLocalDataSource: MovieLocalDataSource,
-    private val ktorInterface: KtorInterface,
 ) : MovieRepository {
 
     // 최초 영화 검색
@@ -41,12 +40,7 @@ class MovieRepositoryImpl @Inject constructor(
     override fun getSearchMoviesFlow(query: String): Flow<List<Movie>> {
         return flow {
             // Retrofit을 사용하여 API 호출.
-            /*movieRemoteDataSource.getSearchMoviesFlow(query).collect {
-                emit(mapperToMovie(it.movies))
-            }*/
-
-            // Ktor을 사용하여 API 호출.
-            ktorInterface.requestMoveSearchData(query).collect {
+            movieRemoteDataSource.getSearchMoviesFlow(query).collect {
                 emit(mapperToMovie(it.items))
             }
         }
