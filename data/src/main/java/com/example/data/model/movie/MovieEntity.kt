@@ -8,28 +8,21 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "movie")
 data class MovieEntity(
-    @SerializedName("actor")
-    val actor: String,
-
-    @SerializedName("director")
-    val director: String,
-
-    @SerializedName("image")
-    val image: String,
-
-    @SerializedName("link")
-    val link: String,
-
-    @SerializedName("pubDate")
-    val pubDate: String,
-
-    @SerializedName("subtitle")
-    val subtitle: String,
 
     @PrimaryKey(autoGenerate = false)
-    @SerializedName("title")
+    @SerializedName("Title")
     val title: String,
 
-    @SerializedName("userRating")
-    val userRating: String
+    @SerializedName("Year")
+    val year: String,
+
+    @SerializedName("imdbID")
+    val imdbID: String,
+
+    @SerializedName("Type")
+    val type: String,
+
+    @SerializedName("Poster")
+    val poster: String
+
 )

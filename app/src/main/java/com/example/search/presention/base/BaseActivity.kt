@@ -12,6 +12,7 @@ import io.reactivex.disposables.CompositeDisposable
 abstract class BaseActivity<B : ViewDataBinding>(
     @LayoutRes val layoutId: Int
 ) : AppCompatActivity() {
+
     lateinit var binding: B
     private val compositeDisposable = CompositeDisposable()
     private var backPressHandler: BackPressUtil? = null

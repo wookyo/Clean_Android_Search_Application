@@ -13,7 +13,7 @@ import com.example.domain.model.Movie
 import com.example.search.R
 import com.example.search.databinding.ItemMovieBinding
 import com.example.search.presention.utils.ItemMoveCallback
-import com.orhanobut.logger.Logger
+import com.example.search.presention.utils.LogUtils
 import java.util.Collections
 
 class MovieAdapter(private val itemClick: (Movie) -> Unit) :
@@ -45,7 +45,7 @@ class MovieAdapter(private val itemClick: (Movie) -> Unit) :
     }
 
     override fun onRowMoved(fromPosition: Int, toPosition: Int) {
-        Logger.d("onRowMoved :: $fromPosition > $toPosition")
+        LogUtils.d("Test", "onRowMoved :: $fromPosition > $toPosition")
 
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
@@ -60,7 +60,8 @@ class MovieAdapter(private val itemClick: (Movie) -> Unit) :
     }
 
     override fun onRowSelected(itemViewHolder: ViewHolder?) {
-        Logger.d("onRowSelected")
+        LogUtils.d("Test", "onRowSelected")
+
         itemViewHolder!!.rowView!!.setBackgroundColor(
             ContextCompat.getColor(
                 itemViewHolder.context!!,
@@ -70,7 +71,7 @@ class MovieAdapter(private val itemClick: (Movie) -> Unit) :
     }
 
     override fun onRowClear(itemViewHolder: ViewHolder?) {
-        Logger.d("onRowClear")
+        LogUtils.d("Test", "onRowClear")
         itemViewHolder!!.rowView!!.setBackgroundColor(
             ContextCompat.getColor(
                 itemViewHolder.context!!,

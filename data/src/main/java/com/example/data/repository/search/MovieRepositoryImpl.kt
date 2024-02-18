@@ -88,12 +88,8 @@ class MovieRepositoryImpl @Inject constructor(
             if (it.items.isEmpty()) {
                 Single.error(IllegalStateException("LAST_PAGE"))
             } else {
-                if (offset != it.start) {
-                    Single.error(IllegalStateException("LAST_PAGE"))
-                } else {
-                    movieLocalDataSource.insertMovies(it.items)
-                        .andThen(Single.just(mapperToMovie(it.items)))
-                }
+                movieLocalDataSource.insertMovies(it.items)
+                    .andThen(Single.just(mapperToMovie(it.items)))
             }
         }
     }

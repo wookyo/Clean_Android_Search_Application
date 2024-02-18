@@ -17,10 +17,6 @@ class MovieSearchActivity :
     BaseActivity<ActivityMovieSearchBinding>(R.layout.activity_movie_search) {
     private lateinit var movieAdapter: MovieAdapter
 
-    // Koin 사용 시
-    // import org.koin.androidx.viewmodel.ext.android.viewModel
-//    private val viewModel: MovieSearchViewModel by viewModel()
-
     // Hilt 사용 시
     // import androidx.activity.viewModels
     private val viewModel: MovieSearchViewModel by viewModels()
@@ -35,7 +31,7 @@ class MovieSearchActivity :
 
     private fun initAdapter() {
         movieAdapter = MovieAdapter { movie ->
-            Intent(Intent.ACTION_VIEW, Uri.parse(movie.link)).takeIf {
+            Intent(Intent.ACTION_VIEW, Uri.parse(movie.poster)).takeIf {
                 it.resolveActivity(packageManager) != null
             }?.run(this::startActivity)
         }

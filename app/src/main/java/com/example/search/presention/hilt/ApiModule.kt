@@ -1,8 +1,10 @@
 package com.example.search.presention.hilt
 
 import android.util.Log
+import com.example.data.api.APIConstants
 import com.example.data.api.ApiClient
 import com.example.data.api.ApiInterface
+import com.example.data.api.SessionManager
 import com.google.gson.GsonBuilder
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -19,13 +21,18 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
+import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -52,17 +59,13 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(
-        headerInterceptor: Interceptor,
-        LoggerInterceptor: HttpLoggingInterceptor,
+        paramInterceptorImpl: ParamInterceptorImpl
     ): OkHttpClient {
-
         val okHttpClientBuilder = OkHttpClient().newBuilder()
         okHttpClientBuilder.connectTimeout(60, TimeUnit.SECONDS)
         okHttpClientBuilder.readTimeout(60, TimeUnit.SECONDS)
         okHttpClientBuilder.writeTimeout(60, TimeUnit.SECONDS)
-        okHttpClientBuilder.addInterceptor(headerInterceptor)
-        okHttpClientBuilder.addInterceptor(LoggerInterceptor)
-
+        okHttpClientBuilder.addInterceptor(paramInterceptorImpl)
         return okHttpClientBuilder.build()
     }
 
@@ -125,6 +128,24 @@ object ApiModule {
                     append("X-Naver-Client-Secret", "fyfwt9PCUN")
                 }
             }
+        }
+    }
+
+    class ParamInterceptorImpl @Inject constructor(
+        private val sessionManager: SessionManager,
+    ): Interceptor {
+        @Throws(IOException::class)
+        override fun intercept(chain: Interceptor.Chain): Response {
+            var request: Request = chain.request()
+            val builder: Request.Builder = request.newBuilder()
+            request = builder.build()
+            val urlBuilder: HttpUrl.Builder = request.url.newBuilder()
+            // params
+            urlBuilder.addQueryParameter(APIConstants.APIKEY, sessionManager.apiKey)
+
+            val url = urlBuilder.build()
+            request = request.newBuilder().url(url).build()
+            return chain.proceed(request)
         }
     }
 }

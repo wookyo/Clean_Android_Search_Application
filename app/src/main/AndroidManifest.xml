@@ -7,6 +7,7 @@
 
 
     <application
+        android:name=".SearchApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,17 +17,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieSearchApplication"
         tools:targetApi="31">
+
         <activity
             android:name=".IntroActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.MovieSearchApplication">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".presention.view.search.MovieSearchActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

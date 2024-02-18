@@ -13,16 +13,24 @@ import javax.inject.Inject
 
 class KtorInterfaceImpl @Inject constructor(private val client: HttpClient) : KtorInterface {
 
-    override suspend fun requestMoveSearchData(
-        query: String,
-        start: Int,
-        display: Int,
-    ): Flow<MovieResponse> {
-        return flow {
+    //    override suspend fun requestMoveSearchData(
+//        query: String,
+//        start: Int,
+//        display: Int,
+//    ): Flow<MovieResponse> {
+//        return flow {
+//            emit(client.get(ApiClient.KTOR_BASE_URL) {
+//                parameter("query", query)
+//                parameter("start", start)
+//                parameter("display", display)
+//            }.body())
+//        }
+//    }
+    override suspend fun requestMoveSearchData(query: String, start: Int): Flow<MovieResponse> {
+                return flow {
             emit(client.get(ApiClient.KTOR_BASE_URL) {
                 parameter("query", query)
                 parameter("start", start)
-                parameter("display", display)
             }.body())
         }
     }

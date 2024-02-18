@@ -5,18 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MovieResponse(
-    @SerializedName("display")
-    val display: Int,
 
-    @SerializedName("items")
+    @SerializedName("Search")
     val items: List<MovieEntity>,
 
-    @SerializedName("lastBuildDate")
-    val lastBuildDate: String,
+    @SerializedName("totalResults")
+    val totalResults: String,
 
-    @SerializedName("start")
-    val start: Int,
+    @SerializedName("Response")
+    val response: String,
 
-    @SerializedName("total")
-    val total: Int
 )
