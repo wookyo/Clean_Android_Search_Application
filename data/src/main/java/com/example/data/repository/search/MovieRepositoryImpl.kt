@@ -18,6 +18,7 @@ class MovieRepositoryImpl @Inject constructor(
     private val movieLocalDataSource: MovieLocalDataSource,
 ) : MovieRepository {
 
+    // remote data (페이징)
     override fun getSearchMovies(query: String): Flow<List<Movie>> {
         return flow {
             movieRemoteDataSource.getSearchMovies(query).collect {
@@ -26,6 +27,7 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
+    // local data
     override fun getLocalSearchMovies(query: String): Flow<List<Movie>> {
         return flow{
             movieLocalDataSource.getSearchMovies(query).collect {
@@ -34,11 +36,8 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
-    //영화 검색 후 스크롤 내리면 영화 더 불러오기
-    override fun getPagingMovies(
-        query: String,
-        offset: Int,
-    ): Flow<List<Movie>> {
+    // remote data (페이징)
+    override fun getPagingMovies(query: String, offset: Int): Flow<List<Movie>> {
         return flow{
             movieRemoteDataSource.getSearchMovies(query,offset).collect {
                 emit(mapperToMovie(it.items))

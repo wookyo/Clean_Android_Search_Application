@@ -8,14 +8,17 @@ import io.reactivex.Single
 
 interface MovieRepository {
 
+    // remote data (페이징)
     fun getSearchMovies(
         query: String
     ): Flow<List<Movie>>
 
+    // local data
     fun getLocalSearchMovies(
         query: String
     ): Flow<List<Movie>>
 
+    // remote data (페이징)
     fun getPagingMovies(
         query: String,
         offset: Int
