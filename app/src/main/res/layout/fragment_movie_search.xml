@@ -101,66 +101,66 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
-                android:id="@+id/tv_download_storage"
+                android:id="@+id/tv_movie_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:textColor="#a5a5a5"
                 android:textSize="14dp"
                 android:text="Home"
-                app:layout_constraintBottom_toBottomOf="@+id/view_download_storage"
-                app:layout_constraintEnd_toEndOf="@+id/view_download_storage"
-                app:layout_constraintStart_toStartOf="@+id/view_download_storage" />
+                app:layout_constraintBottom_toBottomOf="@+id/view_movie_home"
+                app:layout_constraintEnd_toEndOf="@+id/view_movie_home"
+                app:layout_constraintStart_toStartOf="@+id/view_movie_home" />
 
             <View
-                android:id="@+id/view_download_storage_bottom_bar"
+                android:id="@+id/view_movie_home_bottom_bar"
                 android:layout_width="55dp"
                 android:layout_height="4dp"
-                android:background="@color/bright_grey"
-                app:layout_constraintBottom_toBottomOf="@+id/view_download_storage"
-                app:layout_constraintEnd_toEndOf="@+id/view_download_storage"
-                app:layout_constraintStart_toStartOf="@+id/view_download_storage" />
+                android:background="@color/dp_primary"
+                app:layout_constraintBottom_toBottomOf="@+id/view_movie_home"
+                app:layout_constraintEnd_toEndOf="@+id/view_movie_home"
+                app:layout_constraintStart_toStartOf="@+id/view_movie_home" />
 
             <View
-                android:id="@+id/view_download_storage"
+                android:id="@+id/view_movie_home"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintEnd_toStartOf="@+id/view_download_manage"
+                app:layout_constraintEnd_toStartOf="@+id/view_movie_favorite"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_download_manage"
+                android:id="@+id/tv_movie_favorite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:textColor="#a5a5a5"
                 android:textSize="14dp"
                 android:text="즐겨찾기"
-                app:layout_constraintBottom_toBottomOf="@+id/view_download_manage"
-                app:layout_constraintEnd_toEndOf="@+id/view_download_manage"
-                app:layout_constraintStart_toStartOf="@+id/view_download_manage"/>
+                app:layout_constraintBottom_toBottomOf="@+id/view_movie_favorite"
+                app:layout_constraintEnd_toEndOf="@+id/view_movie_favorite"
+                app:layout_constraintStart_toStartOf="@+id/view_movie_favorite"/>
 
             <View
-                android:id="@+id/view_download_manage_bottom_bar"
+                android:id="@+id/view_movie_favorite_bottom_bar"
                 android:layout_width="42dp"
                 android:layout_height="4dp"
-                android:background="@color/bright_grey"
+                android:background="@color/dp_primary"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/view_download_manage"
-                app:layout_constraintEnd_toEndOf="@+id/view_download_manage"
-                app:layout_constraintStart_toStartOf="@+id/view_download_manage" />
+                app:layout_constraintBottom_toBottomOf="@+id/view_movie_favorite"
+                app:layout_constraintEnd_toEndOf="@+id/view_movie_favorite"
+                app:layout_constraintStart_toStartOf="@+id/view_movie_favorite" />
 
             <View
-                android:id="@+id/view_download_manage"
+                android:id="@+id/view_movie_favorite"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintBottom_toBottomOf="@+id/view_download_storage"
+                app:layout_constraintBottom_toBottomOf="@+id/view_movie_home"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/view_download_storage"
-                app:layout_constraintTop_toTopOf="@+id/view_download_storage" />
+                app:layout_constraintStart_toEndOf="@+id/view_movie_home"
+                app:layout_constraintTop_toTopOf="@+id/view_movie_home" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

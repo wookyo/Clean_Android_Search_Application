@@ -1,7 +1,6 @@
 package com.example.search.presention.view.search
 
-import android.content.Intent
-import android.net.Uri
+import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -9,6 +8,8 @@ import com.example.search.R
 import com.example.search.databinding.FragmentMovieSearchBinding
 import com.example.search.presention.base.BaseBindingFragment
 import com.example.search.presention.utils.ItemMoveCallback
+import com.example.search.presention.view.search.MovieSearchViewModel.Companion.FAVORITE
+import com.example.search.presention.view.search.MovieSearchViewModel.Companion.HOME
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,6 +36,7 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>() {
         initViewModelCallback()
         initObserver()
         initAdapter()
+        initClickListener()
     }
 
     private fun initAdapter() {
@@ -49,6 +51,37 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>() {
         touchHelper.attachToRecyclerView(binding?.rvMovies)
 
         binding?.rvMovies?.adapter = movieAdapter
+    }
+
+    private fun initClickListener() {
+        binding?.viewMovieHome?.setOnClickListener {
+            if (viewModel.currentView == HOME) return@setOnClickListener
+            viewModel.currentView = HOME
+            changeBottomTabBar(HOME)
+            //setStorageItemsObserver()
+        }
+        binding?.viewMovieFavorite?.setOnClickListener {
+            if (viewModel.currentView == FAVORITE) return@setOnClickListener
+            viewModel.currentView = FAVORITE
+            changeBottomTabBar(FAVORITE)
+            //setManageItemsObservers()
+        }
+    }
+
+    private fun changeBottomTabBar(currentView: Int) {
+        binding?.run {
+            when(currentView){
+                HOME -> {
+                    viewMovieHomeBottomBar.visibility = View.VISIBLE
+                    viewMovieFavoriteBottomBar.visibility = View.GONE
+                }
+                FAVORITE ->{
+                    viewMovieHomeBottomBar.visibility = View.GONE
+                    viewMovieFavoriteBottomBar.visibility = View.VISIBLE
+                }
+            }
+        }
+
     }
 
     private fun initObserver() {

@@ -23,6 +23,10 @@ class MovieSearchViewModel @Inject constructor(
     private val networkManager: NetworkManager,
 ) : BaseViewModel() {
 
+    companion object {
+        const val HOME = 100
+        const val FAVORITE = 101
+    }
     // 현재 검색어
     private var currentQuery: String = ""
 
@@ -35,6 +39,9 @@ class MovieSearchViewModel @Inject constructor(
     // 검색 결과에 따른 toast 메세지.
     private val _toastMsg = MutableLiveData<MessageSet>()
     val toastMsg: LiveData<MessageSet> get() = _toastMsg
+
+    // view 상태
+    var currentView = HOME
 
     enum class MessageSet {
         LAST_PAGE,
