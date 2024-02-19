@@ -10,6 +10,7 @@ import com.example.search.R
 import com.example.search.databinding.FragmentMovieSearchBinding
 import com.example.search.presention.base.BaseBindingFragment
 import com.example.search.presention.utils.ItemMoveCallback
+import com.example.search.presention.utils.LogUtils
 import com.example.search.presention.view.search.MovieSearchViewModel.Companion.FAVORITE
 import com.example.search.presention.view.search.MovieSearchViewModel.Companion.HOME
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,9 +34,10 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
     }
 
     override fun initView() {
-        binding?.model = viewModel
-        binding?.clickListener = this
-        initViewModelCallback()
+        binding?.let {
+            it.model = viewModel
+            it.clickListener = this
+        }
         initObserver()
         initAdapter()
     }
@@ -48,21 +50,20 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
                 setMessage(message)
                 setCancelable(true)
                 setPositiveButton(message, DialogInterface.OnClickListener { dialog, which ->
-                    movie.isFavorite = !movie.isFavorite
                     if(movie.isFavorite){
+                        movie.isFavorite = false
                         viewModel.deleteLocalSearchMovie(movie)
                     }else{
+                        movie.isFavorite = true
                         viewModel.insertLocalSearchMovie(movie)
                     }
                 })
                 show()
             }
         }
-
         val callback: ItemTouchHelper.Callback = ItemMoveCallback(movieAdapter)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(binding?.rvMovies)
-
         binding?.rvMovies?.adapter = movieAdapter
     }
 
@@ -82,29 +83,57 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
     }
 
     private fun initObserver() {
-        viewModel.movieList.observe(viewLifecycleOwner, Observer { items ->
-            if( items.isNullOrEmpty()){
-                showToast(requireContext(), getString(R.string.no_movie_error_msg))
-            }else {
-                movieAdapter.setMovieList(items)
-            }
-        })
-    }
-
-    private fun initViewModelCallback() {
         with(viewModel) {
-            toastMsg.observe(viewLifecycleOwner, Observer {
-                when (toastMsg.value) {
-                    MovieSearchViewModel.MessageSet.LAST_PAGE -> showToast(requireContext(), getString(R.string.last_page_msg))
-                    MovieSearchViewModel.MessageSet.EMPTY_QUERY -> showToast(requireContext(),getString(R.string.search_input_query_msg))
-                    MovieSearchViewModel.MessageSet.NETWORK_NOT_CONNECTED -> showToast(requireContext(),getString(R.string.network_error_msg))
-                    MovieSearchViewModel.MessageSet.SUCCESS -> showToast(requireContext(),getString(R.string.load_movie_success_msg))
-                    MovieSearchViewModel.MessageSet.NO_RESULT -> showToast(requireContext(),getString(R.string.no_movie_error_msg))
-                    MovieSearchViewModel.MessageSet.ERROR -> showToast(requireContext(),getString(R.string.error_msg))
-                    MovieSearchViewModel.MessageSet.LOCAL_SUCCESS -> showToast(requireContext(),getString(R.string.local_db_msg))
-                    else -> ""
+            movieList.observe(viewLifecycleOwner, Observer { items ->
+                if( items.isNullOrEmpty()){
+                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
+                }else {
+                    movieAdapter.setMovieList(items)
                 }
             })
+        }
+    }
+
+    private fun initObserverData() {
+        with(viewModel) {
+            if( remoteMovieList.hasObservers()){
+                remoteMovieList.removeObservers(viewLifecycleOwner)
+            }
+            if( localMovieList.hasObservers()){
+                localMovieList.removeObservers(viewLifecycleOwner)
+            }
+        }
+        movieAdapter.clearData()
+        viewModel.resetRemoteItemOffsetInfo()
+    }
+
+    private fun setRemoteItemsObserver(){
+        if (viewModel.currentView != HOME) return
+        initObserverData()
+        with(viewModel) {
+        remoteMovieList.observe(viewLifecycleOwner, Observer { items ->
+                if( items.isNullOrEmpty()){
+                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
+                    return@Observer
+                }
+            updateMovieList(items)
+            })
+        requestRemoteMovie()
+        }
+    }
+
+    private fun setLocalItemsObserver(){
+        if (viewModel.currentView != FAVORITE) return
+        initObserverData()
+        with(viewModel) {
+            localMovieList.observe(viewLifecycleOwner, Observer { items ->
+                if( items.isNullOrEmpty()){
+                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
+                    return@Observer
+                }
+                updateMovieList(items)
+            })
+            requestLocalMovies()
         }
     }
 
@@ -114,15 +143,13 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
                 if (viewModel.currentView == HOME) return
                 viewModel.currentView = HOME
                 changeBottomTabBar(HOME)
-                movieAdapter.clearData()
-                viewModel.requestMovie()
+                setRemoteItemsObserver()
             }
             R.id.view_movie_favorite ->{
                 if (viewModel.currentView == FAVORITE) return
                 viewModel.currentView = FAVORITE
                 changeBottomTabBar(FAVORITE)
-                movieAdapter.clearData()
-                viewModel.requestLocalMovies()
+                setLocalItemsObserver()
             }
         }
     }

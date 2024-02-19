@@ -34,6 +34,7 @@ class MovieSearchViewModel @Inject constructor(
     private var currentQuery: String = ""
 
     val query = MutableLiveData<String>()
+    var offset:Int = 0
 
     // 검색어 visible list
     private val _movieList = MutableLiveData<ArrayList<Movie>>()
@@ -42,6 +43,11 @@ class MovieSearchViewModel @Inject constructor(
     // remote data list
     private val _remoteMovieList = MutableLiveData<ArrayList<Movie>>()
     val remoteMovieList: LiveData<ArrayList<Movie>> get() = _remoteMovieList
+
+    // local data list
+    private val _localMovieList = MutableLiveData<ArrayList<Movie>>()
+    val localMovieList: LiveData<ArrayList<Movie>> get() = _localMovieList
+
 
     // 검색 결과에 따른 toast 메세지.
     private val _toastMsg = MutableLiveData<MessageSet>()
@@ -53,16 +59,13 @@ class MovieSearchViewModel @Inject constructor(
     val job = SupervisorJob()
 
     enum class MessageSet {
-        LAST_PAGE,
         EMPTY_QUERY,
-        NETWORK_NOT_CONNECTED,
         ERROR,
         SUCCESS,
-        NO_RESULT,
-        LOCAL_SUCCESS
+        NO_RESULT
     }
 
-    fun requestMovie() {
+    fun requestRemoteMovie() {
         currentQuery = query.value.toString().trim()
         if (currentQuery.isEmpty()) {
             _toastMsg.value = MessageSet.EMPTY_QUERY
@@ -111,10 +114,6 @@ class MovieSearchViewModel @Inject constructor(
         }
     }
 
-    private fun checkNetworkState(): Boolean {
-        return networkManager.checkNetworkState()
-    }
-
      fun requestLocalMovies() {
         viewModelScope.launch {
             getLocalMoviesUseCase.getLocalAllMovies()
@@ -145,4 +144,16 @@ class MovieSearchViewModel @Inject constructor(
             getLocalMoviesUseCase.deleteLocalSearchMovie(item)
         }
     }
+
+    private fun checkNetworkState(): Boolean {
+        return networkManager.checkNetworkState()
+    }
+    fun resetRemoteItemOffsetInfo() {
+        this.offset = 0
+    }
+
+    fun updateMovieList(list: ArrayList<Movie>){
+        _movieList.value = list
+    }
+
 }
