@@ -11,4 +11,8 @@ class GetLocalMoviesUseCase @Inject constructor(private val repository: MovieRep
      fun getLocalSearchMovies(
         query: String,
     ): Flow<List<Movie>> = repository.getLocalSearchMovies(query)
+
+    fun insertLocalSearchMovie(item: Movie) = repository.insertLocalSearchMovie(item)
+
+    fun deleteLocalSearchMovie(item: Movie) = repository.deleteLocalSearchMovie(item)
 }

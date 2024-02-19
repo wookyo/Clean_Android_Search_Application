@@ -2,6 +2,7 @@ package com.example.data.repository.search
 
 import com.example.data.api.KtorInterface
 import com.example.data.mappper.mapperToMovie
+import com.example.data.model.movie.MovieEntity
 
 import com.example.data.repository.search.local.MovieLocalDataSource
 import com.example.data.repository.search.remote.MovieRemoteDataSource
@@ -43,6 +44,14 @@ class MovieRepositoryImpl @Inject constructor(
                 emit(mapperToMovie(it.items))
             }
         }
+    }
+
+    override fun insertLocalSearchMovie(query: Movie): Long {
+        return movieLocalDataSource.insertMovie(MovieEntity(query))
+    }
+
+    override fun deleteLocalSearchMovie(query: Movie): Int {
+        return movieLocalDataSource.deletelMovie(MovieEntity(query))
     }
 
 }

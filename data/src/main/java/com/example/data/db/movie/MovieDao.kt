@@ -1,6 +1,7 @@
 package com.example.data.db.movie
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -15,6 +16,9 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMovies(movies: List<MovieEntity>): Completable
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertMovie(item: MovieEntity): Long
+
     @Query("SELECT * FROM movie")
     fun getAllMovies(): Flow<List<MovieEntity>>
 
@@ -23,4 +27,7 @@ interface MovieDao {
 
     @Query("DELETE FROM movie")
     fun deleteAllMovies(): Completable
+
+    @Delete
+    fun deleteMovie(item: MovieEntity): Int
 }

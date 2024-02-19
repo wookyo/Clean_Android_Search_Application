@@ -5,5 +5,6 @@ data class Movie(
     val year: String,
     val imdbID: String,
     val type: String,
-    val poster: String
+    val poster: String,
+    var isFavorite:Boolean = false
 )

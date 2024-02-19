@@ -10,4 +10,8 @@ interface MovieLocalDataSource {
     fun getAllMovies(): Flow<List<MovieEntity>>
     fun getSearchMovies(title: String): Flow<List<MovieEntity>>
     fun deleteAllMovies(): Completable
+
+     fun deletelMovie(item: MovieEntity): Int
+
+     fun insertMovie(item: MovieEntity):Long
 }

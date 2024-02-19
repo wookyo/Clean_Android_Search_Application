@@ -1,16 +1,24 @@
 package com.example.search.presention.view.search
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.search.R
 import com.example.search.databinding.FragmentMovieSearchBinding
 import com.example.search.presention.base.BaseBindingFragment
 import com.example.search.presention.utils.ItemMoveCallback
+import com.example.search.presention.utils.LogUtils
 import com.example.search.presention.view.search.MovieSearchViewModel.Companion.FAVORITE
 import com.example.search.presention.view.search.MovieSearchViewModel.Companion.HOME
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), View.OnClickListener {
@@ -41,9 +49,24 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
 
     private fun initAdapter() {
         movieAdapter = MovieAdapter { movie ->
-//            Intent(Intent.ACTION_VIEW, Uri.parse(movie.poster)).takeIf {
-//                it.resolveActivity(packageManager) != null
-//            }?.run(this::startActivity)
+            LogUtils.e("TEST", "[initAdapter]")
+            AlertDialog.Builder(context).apply {
+                val message = if(movie.isFavorite) resources.getString(R.string.favorite_cancel)
+                else resources.getString(R.string.favorite_add)
+
+                setMessage(message)
+                setCancelable(true)
+                setPositiveButton(message, DialogInterface.OnClickListener { dialog, which ->
+                    if(movie.isFavorite){
+                        viewModel.deleteLocalSearchMovie(movie)
+
+                    }else{
+                        movie.isFavorite = true
+                        viewModel.insertLocalSearchMovie(movie)
+                    }
+                })
+                show()
+            }
         }
 
         val callback: ItemTouchHelper.Callback = ItemMoveCallback(movieAdapter)
@@ -117,11 +140,13 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
                 if (viewModel.currentView == HOME) return
                 viewModel.currentView = HOME
                 changeBottomTabBar(HOME)
+                viewModel.requestMovie()
             }
             R.id.view_movie_favorite ->{
                 if (viewModel.currentView == FAVORITE) return
                 viewModel.currentView = FAVORITE
                 changeBottomTabBar(FAVORITE)
+                viewModel.requestLocalMovies()
             }
         }
     }

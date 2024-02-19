@@ -2,6 +2,7 @@ package com.example.data.model.movie
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.domain.model.Movie
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
@@ -11,18 +12,31 @@ data class MovieEntity(
 
     @PrimaryKey(autoGenerate = false)
     @SerializedName("Title")
-    val title: String,
+    var title: String = "",
 
     @SerializedName("Year")
-    val year: String,
+    var year: String = "",
 
     @SerializedName("imdbID")
-    val imdbID: String,
+    var imdbID: String = "",
 
     @SerializedName("Type")
-    val type: String,
+    var type: String = "",
 
     @SerializedName("Poster")
-    val poster: String
+    var poster: String = ""
+){
 
-)
+    constructor(movie: Movie) : this() {
+        convertMovieToEntity(movie)
+    }
+
+    fun convertMovieToEntity(movie: Movie) {
+        movie.title.let { this.title = it }
+        movie.year.let { this.year = it }
+        movie.imdbID.let { this.imdbID = it }
+        movie.type.let { this.type = it }
+        movie.poster.let { this.poster = it }
+    }
+}
+

@@ -23,4 +23,12 @@ interface MovieRepository {
         query: String,
         offset: Int
     ): Flow<List<Movie>>
+
+    fun insertLocalSearchMovie(
+        query: Movie
+    ): Long
+
+    fun deleteLocalSearchMovie(
+        query: Movie
+    ): Int
 }

@@ -10,6 +10,9 @@ import com.example.domain.usecase.movie.GetMoviesUseCase
 import com.example.search.presention.base.BaseViewModel
 import com.example.search.presention.utils.NetworkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -46,6 +49,8 @@ class MovieSearchViewModel @Inject constructor(
 
     // view 상태
     var currentView = HOME
+
+    val job = SupervisorJob()
 
     enum class MessageSet {
         LAST_PAGE,
@@ -110,7 +115,7 @@ class MovieSearchViewModel @Inject constructor(
         return networkManager.checkNetworkState()
     }
 
-    private fun requestLocalMovies() {
+     fun requestLocalMovies() {
         viewModelScope.launch {
             getLocalMoviesUseCase.getLocalSearchMovies(currentQuery)
                 .onStart { showProgress() }
@@ -126,6 +131,22 @@ class MovieSearchViewModel @Inject constructor(
                         _toastMsg.value = MessageSet.SUCCESS
                     }
                 }
+        }
+    }
+
+     fun insertLocalSearchMovie(item: Movie) {
+
+         CoroutineScope(Dispatchers.IO + job).launch {
+             getLocalMoviesUseCase.insertLocalSearchMovie(item)
+         }
+//        viewModelScope.launch {
+//            getLocalMoviesUseCase.insertLocalSearchMovie(item)
+//        }
+    }
+
+    fun deleteLocalSearchMovie(item: Movie) {
+        CoroutineScope(Dispatchers.IO + job).launch {
+            getLocalMoviesUseCase.deleteLocalSearchMovie(item)
         }
     }
 }

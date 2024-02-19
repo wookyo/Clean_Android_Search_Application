@@ -16,6 +16,7 @@ import com.example.data.repository.search.local.MovieLocalDataSourceImpl
 import com.example.data.repository.search.remote.MovieRemoteDataSource
 import com.example.data.repository.search.remote.MovieRemoteDataSourceImpl
 import com.example.domain.repository.MovieRepository
+import com.example.search.presention.utils.LogUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,6 +45,7 @@ object DataModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context): MovieDatabase {
+        LogUtils.e("TEST", "[provideRoom]")
         return Room.databaseBuilder(
             context,
             MovieDatabase::class.java,
