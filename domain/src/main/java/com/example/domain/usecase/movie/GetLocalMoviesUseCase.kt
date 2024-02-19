@@ -8,9 +8,7 @@ import javax.inject.Inject
 
 class GetLocalMoviesUseCase @Inject constructor(private val repository: MovieRepository) {
 
-     fun getLocalSearchMovies(
-        query: String,
-    ): Flow<List<Movie>> = repository.getLocalSearchMovies(query)
+     fun getLocalAllMovies(): Flow<List<Movie>> = repository.getLocalAllMovies()
 
     fun insertLocalSearchMovie(item: Movie) = repository.insertLocalSearchMovie(item)
 

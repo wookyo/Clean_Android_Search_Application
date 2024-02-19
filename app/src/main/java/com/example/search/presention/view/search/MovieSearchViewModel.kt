@@ -117,7 +117,7 @@ class MovieSearchViewModel @Inject constructor(
 
      fun requestLocalMovies() {
         viewModelScope.launch {
-            getLocalMoviesUseCase.getLocalSearchMovies(currentQuery)
+            getLocalMoviesUseCase.getLocalAllMovies()
                 .onStart { showProgress() }
                 .onCompletion { hideProgress() }
                 .catch {

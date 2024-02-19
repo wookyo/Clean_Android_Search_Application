@@ -29,9 +29,9 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     // local data
-    override fun getLocalSearchMovies(query: String): Flow<List<Movie>> {
+    override fun getLocalAllMovies(): Flow<List<Movie>> {
         return flow{
-            movieLocalDataSource.getSearchMovies(query).collect {
+            movieLocalDataSource.getAllMovies().collect {
                 emit(mapperToMovie(it))
             }
         }

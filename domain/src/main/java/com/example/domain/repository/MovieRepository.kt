@@ -14,8 +14,7 @@ interface MovieRepository {
     ): Flow<List<Movie>>
 
     // local data
-    fun getLocalSearchMovies(
-        query: String
+    fun getLocalAllMovies(
     ): Flow<List<Movie>>
 
     // remote data (페이징)
