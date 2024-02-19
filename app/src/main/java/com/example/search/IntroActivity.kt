@@ -3,15 +3,12 @@ package com.example.search
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import android.os.Build
-import android.os.Handler
-import android.os.HandlerThread
 import com.example.search.databinding.ActivityIntroBinding
-import com.example.search.presention.base.BaseActivity
+import com.example.search.presention.base.BaseBindingActivity
 import com.example.search.presention.view.search.MovieSearchActivity
 import kotlin.concurrent.thread
 
-class IntroActivity : BaseActivity<ActivityIntroBinding>() {
+class IntroActivity: BaseBindingActivity<ActivityIntroBinding>() {
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_intro

@@ -7,12 +7,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.search.R
 import com.example.search.databinding.ActivityMovieSearchBinding
-import com.example.search.presention.base.BaseActivity
+import com.example.search.presention.base.BaseBindingActivity
 import com.example.search.presention.utils.ItemMoveCallback
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MovieSearchActivity: BaseActivity<ActivityMovieSearchBinding>() {
+class MovieSearchActivity: BaseBindingActivity<ActivityMovieSearchBinding>() {
 
     private lateinit var movieAdapter: MovieAdapter
 
@@ -56,7 +56,6 @@ class MovieSearchActivity: BaseActivity<ActivityMovieSearchBinding>() {
 
     private fun initViewModelCallback() {
         with(viewModel) {
-            // toastMsg 가 변경 시, 변경된 text 로 toast 를 띄워 준다.
             toastMsg.observe(this@MovieSearchActivity, Observer {
                 when (toastMsg.value) {
                     MovieSearchViewModel.MessageSet.LAST_PAGE -> showToast(getString(R.string.last_page_msg))

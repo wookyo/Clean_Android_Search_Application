@@ -2,14 +2,13 @@ package com.example.search.presention.base
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.example.search.presention.utils.BackPressUtil
 import io.reactivex.disposables.CompositeDisposable
 
-abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
+abstract class BaseBindingActivity<T : ViewDataBinding> : AppCompatActivity() {
 
     private var _binding: T? = null
     protected val binding get() = _binding!!
