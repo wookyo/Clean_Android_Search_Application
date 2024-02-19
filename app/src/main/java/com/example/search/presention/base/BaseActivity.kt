@@ -9,19 +9,28 @@ import androidx.databinding.ViewDataBinding
 import com.example.search.presention.utils.BackPressUtil
 import io.reactivex.disposables.CompositeDisposable
 
-abstract class BaseActivity<B : ViewDataBinding>(
-    @LayoutRes val layoutId: Int
-) : AppCompatActivity() {
+abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
 
-    lateinit var binding: B
+    private var _binding: T? = null
+    protected val binding get() = _binding!!
+
     private val compositeDisposable = CompositeDisposable()
+
     private var backPressHandler: BackPressUtil? = null
+
+    abstract fun initData()
+
+    abstract fun getLayoutRes(): Int
+
+    abstract fun initView(viewDataBinding: T)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, layoutId)
+        initData()
+        _binding = DataBindingUtil.setContentView(this, getLayoutRes())
         binding.lifecycleOwner = this
         backPressHandler = BackPressUtil(this)
+        initView(binding)
     }
 
     protected fun showToast(msg: String) {
@@ -34,6 +43,7 @@ abstract class BaseActivity<B : ViewDataBinding>(
     }
 
     override fun onBackPressed() {
-        backPressHandler!!.onBackPressed()
+        super.onBackPressed()
+        backPressHandler?.onBackPressed()
     }
 }

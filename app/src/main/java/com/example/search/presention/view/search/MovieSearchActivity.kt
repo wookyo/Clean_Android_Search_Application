@@ -2,7 +2,6 @@ package com.example.search.presention.view.search
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -13,21 +12,27 @@ import com.example.search.presention.utils.ItemMoveCallback
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MovieSearchActivity :
-    BaseActivity<ActivityMovieSearchBinding>(R.layout.activity_movie_search) {
+class MovieSearchActivity: BaseActivity<ActivityMovieSearchBinding>() {
+
     private lateinit var movieAdapter: MovieAdapter
 
-    // Hilt 사용 시
-    // import androidx.activity.viewModels
     private val viewModel: MovieSearchViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_movie_search
+    }
+
+    override fun initData() {
+
+    }
+
+    override fun initView(viewDataBinding: ActivityMovieSearchBinding) {
         binding.model = viewModel
         initViewModelCallback()
         initObserver()
         initAdapter()
     }
+
 
     private fun initAdapter() {
         movieAdapter = MovieAdapter { movie ->

@@ -72,9 +72,8 @@ class MovieSearchViewModel @Inject constructor(
         }
     }
 
-    // 검색한 영화 더 불러오기
     fun requestPagingMovie(offset: Int) {
-        if (!checkNetworkState()) return // 네트워크 연결 유무
+        if (!checkNetworkState()) return
 
         viewModelScope.launch {
             getMoviesUseCase.getFlowData(currentQuery, offset)
