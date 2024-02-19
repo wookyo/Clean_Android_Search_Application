@@ -10,6 +10,10 @@
         <variable
             name="model"
             type="com.example.search.presention.view.search.MovieSearchViewModel" />
+
+        <variable
+            name="clickListener"
+            type="android.view.View.OnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -125,6 +129,7 @@
                 android:id="@+id/view_movie_home"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:onClick="@{clickListener}"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintEnd_toStartOf="@+id/view_movie_favorite"
                 app:layout_constraintStart_toStartOf="parent"
@@ -156,6 +161,7 @@
                 android:id="@+id/view_movie_favorite"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
+                android:onClick="@{clickListener}"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintBottom_toBottomOf="@+id/view_movie_home"
                 app:layout_constraintEnd_toEndOf="parent"

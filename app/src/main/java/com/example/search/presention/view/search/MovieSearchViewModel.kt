@@ -32,9 +32,13 @@ class MovieSearchViewModel @Inject constructor(
 
     val query = MutableLiveData<String>()
 
-    // 검색어 list
+    // 검색어 visible list
     private val _movieList = MutableLiveData<ArrayList<Movie>>()
     val movieList: LiveData<ArrayList<Movie>> get() = _movieList
+
+    // remote data list
+    private val _remoteMovieList = MutableLiveData<ArrayList<Movie>>()
+    val remoteMovieList: LiveData<ArrayList<Movie>> get() = _remoteMovieList
 
     // 검색 결과에 따른 toast 메세지.
     private val _toastMsg = MutableLiveData<MessageSet>()

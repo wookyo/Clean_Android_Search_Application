@@ -13,7 +13,7 @@ import com.example.search.presention.view.search.MovieSearchViewModel.Companion.
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>() {
+class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), View.OnClickListener {
 
     private lateinit var movieAdapter: MovieAdapter
 
@@ -33,10 +33,10 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>() {
 
     override fun initView() {
         binding?.model = viewModel
+        binding?.clickListener = this
         initViewModelCallback()
         initObserver()
         initAdapter()
-        initClickListener()
     }
 
     private fun initAdapter() {
@@ -53,20 +53,20 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>() {
         binding?.rvMovies?.adapter = movieAdapter
     }
 
-    private fun initClickListener() {
-        binding?.viewMovieHome?.setOnClickListener {
-            if (viewModel.currentView == HOME) return@setOnClickListener
-            viewModel.currentView = HOME
-            changeBottomTabBar(HOME)
-            //setStorageItemsObserver()
-        }
-        binding?.viewMovieFavorite?.setOnClickListener {
-            if (viewModel.currentView == FAVORITE) return@setOnClickListener
-            viewModel.currentView = FAVORITE
-            changeBottomTabBar(FAVORITE)
-            //setManageItemsObservers()
-        }
-    }
+//    private fun initClickListener() {
+//        binding?.viewMovieHome?.setOnClickListener {
+//            if (viewModel.currentView == HOME) return@setOnClickListener
+//            viewModel.currentView = HOME
+//            changeBottomTabBar(HOME)
+//            //setStorageItemsObserver()
+//        }
+//        binding?.viewMovieFavorite?.setOnClickListener {
+//            if (viewModel.currentView == FAVORITE) return@setOnClickListener
+//            viewModel.currentView = FAVORITE
+//            changeBottomTabBar(FAVORITE)
+//            //setManageItemsObservers()
+//        }
+//    }
 
     private fun changeBottomTabBar(currentView: Int) {
         binding?.run {
@@ -108,6 +108,21 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>() {
                     else -> ""
                 }
             })
+        }
+    }
+
+    override fun onClick(view: View?) {
+        when(view?.id){
+            R.id.view_movie_home ->{
+                if (viewModel.currentView == HOME) return
+                viewModel.currentView = HOME
+                changeBottomTabBar(HOME)
+            }
+            R.id.view_movie_favorite ->{
+                if (viewModel.currentView == FAVORITE) return
+                viewModel.currentView = FAVORITE
+                changeBottomTabBar(FAVORITE)
+            }
         }
     }
 
