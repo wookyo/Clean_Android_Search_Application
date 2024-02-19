@@ -23,8 +23,7 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
 
     companion object {
         fun newInstance(): MovieSearchFragment {
-            val fragment = MovieSearchFragment()
-            return fragment
+            return MovieSearchFragment()
         }
     }
     override fun initData() {}
