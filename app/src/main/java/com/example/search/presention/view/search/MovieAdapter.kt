@@ -13,13 +13,11 @@ import com.example.domain.model.Movie
 import com.example.search.R
 import com.example.search.databinding.ItemMovieBinding
 import com.example.search.presention.utils.ItemMoveCallback
-import com.example.search.presention.utils.LogUtils
 import java.util.Collections
 
 class MovieAdapter(private val itemClick: (Movie) -> Unit) :
-    ListAdapter<Movie, MovieAdapter.ViewHolder>(
-        diffUtil
-    ), ItemMoveCallback.ItemTouchInterface {
+    ListAdapter<Movie, MovieAdapter.ViewHolder>(diffUtil),
+    ItemMoveCallback.ItemTouchInterface {
 
     private var movieList: ArrayList<Movie> = ArrayList()
 
@@ -45,8 +43,6 @@ class MovieAdapter(private val itemClick: (Movie) -> Unit) :
     }
 
     override fun onRowMoved(fromPosition: Int, toPosition: Int) {
-        LogUtils.d("Test", "onRowMoved :: $fromPosition > $toPosition")
-
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
                 Collections.swap(movieList, i, i + 1)
@@ -60,8 +56,6 @@ class MovieAdapter(private val itemClick: (Movie) -> Unit) :
     }
 
     override fun onRowSelected(itemViewHolder: ViewHolder?) {
-        LogUtils.d("Test", "onRowSelected")
-
         itemViewHolder!!.rowView!!.setBackgroundColor(
             ContextCompat.getColor(
                 itemViewHolder.context!!,
@@ -71,7 +65,6 @@ class MovieAdapter(private val itemClick: (Movie) -> Unit) :
     }
 
     override fun onRowClear(itemViewHolder: ViewHolder?) {
-        LogUtils.d("Test", "onRowClear")
         itemViewHolder!!.rowView!!.setBackgroundColor(
             ContextCompat.getColor(
                 itemViewHolder.context!!,
@@ -94,17 +87,14 @@ class MovieAdapter(private val itemClick: (Movie) -> Unit) :
             context = binding.root.context
             rowView = binding.movieItemContainer
             binding.movie = movie
-            // 데이터 변경 시 binding 을 예약하지 않고 '즉시' 반영한다.
             binding.executePendingBindings()
         }
     }
 
-    /**
-     * diff object
-     *
-     * 서로 같은 아이템인지 판단하기 위한 조건을 직접 추가한다.
-     * title 을 사용하여 같은 아이템인지 여부를 판단하도록 하였다.
-     */
+    fun clearData(){
+        movieList.clear()
+    }
+
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<Movie>() {
             override fun areContentsTheSame(oldItem: Movie, newItem: Movie) =

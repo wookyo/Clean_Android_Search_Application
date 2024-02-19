@@ -134,14 +134,10 @@ class MovieSearchViewModel @Inject constructor(
         }
     }
 
-     fun insertLocalSearchMovie(item: Movie) {
-
-         CoroutineScope(Dispatchers.IO + job).launch {
-             getLocalMoviesUseCase.insertLocalSearchMovie(item)
-         }
-//        viewModelScope.launch {
-//            getLocalMoviesUseCase.insertLocalSearchMovie(item)
-//        }
+    fun insertLocalSearchMovie(item: Movie) {
+        CoroutineScope(Dispatchers.IO + job).launch {
+            getLocalMoviesUseCase.insertLocalSearchMovie(item)
+        }
     }
 
     fun deleteLocalSearchMovie(item: Movie) {
