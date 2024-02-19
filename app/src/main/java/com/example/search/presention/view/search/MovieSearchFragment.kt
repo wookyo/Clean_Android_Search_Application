@@ -52,8 +52,12 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>() {
     }
 
     private fun initObserver() {
-        viewModel.movieList.observe(viewLifecycleOwner, Observer {
-            movieAdapter.setMovieList(it)
+        viewModel.movieList.observe(viewLifecycleOwner, Observer { items ->
+            if( items.isNullOrEmpty()){
+                showToast(requireContext(), getString(R.string.no_movie_error_msg))
+            }else {
+                movieAdapter.setMovieList(items)
+            }
         })
     }
 

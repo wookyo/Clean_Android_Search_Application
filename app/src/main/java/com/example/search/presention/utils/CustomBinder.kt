@@ -1,5 +1,6 @@
 package com.example.search.presention.utils
 
+import android.view.View
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
@@ -12,6 +13,11 @@ import com.example.domain.model.Movie
 import com.example.search.R
 import com.example.search.presention.view.search.MovieAdapter
 import com.example.search.presention.view.search.MovieSearchViewModel
+
+@BindingAdapter("visibleGone")
+fun setVisibility(view: View, visible: Boolean) {
+    view.visibility = if (visible) View.VISIBLE else View.GONE
+}
 
 @BindingAdapter("setItems")
 fun RecyclerView.setAdapterItems(items: MutableList<Movie>?) {
