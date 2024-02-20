@@ -10,9 +10,8 @@ import com.example.search.R
 import com.example.search.databinding.FragmentMovieSearchBinding
 import com.example.search.presention.base.BaseBindingFragment
 import com.example.search.presention.utils.ItemMoveCallback
+import com.example.search.presention.view.search.MovieSearchViewModel.ViewStatus
 import com.example.search.presention.utils.LogUtils
-import com.example.search.presention.view.search.MovieSearchViewModel.Companion.FAVORITE
-import com.example.search.presention.view.search.MovieSearchViewModel.Companion.HOME
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -67,14 +66,14 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
         binding?.rvMovies?.adapter = movieAdapter
     }
 
-    private fun changeBottomTabBar(currentView: Int) {
+    private fun changeBottomTabBar(currentView: ViewStatus) {
         binding?.run {
             when(currentView){
-                HOME -> {
+                ViewStatus.HOME -> {
                     viewMovieHomeBottomBar.visibility = View.VISIBLE
                     viewMovieFavoriteBottomBar.visibility = View.GONE
                 }
-                FAVORITE ->{
+                ViewStatus.FAVORITE ->{
                     viewMovieHomeBottomBar.visibility = View.GONE
                     viewMovieFavoriteBottomBar.visibility = View.VISIBLE
                 }
@@ -110,7 +109,7 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
     }
 
     private fun setRemoteItemsObserver(){
-        if (viewModel.currentView != HOME) return
+        if (viewModel.currentView != ViewStatus.HOME) return
         initObserverData()
         with(viewModel) {
         remoteMovieList.observe(viewLifecycleOwner, Observer { items ->
@@ -119,6 +118,7 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
 //                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
 //                    return@Observer
 //                }
+            if(currentView == ViewStatus.FAVORITE) return@Observer
             updateMovieList(items)
             })
         requestRemoteMovie()
@@ -126,7 +126,7 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
     }
 
     private fun setLocalItemsObserver(){
-        if (viewModel.currentView != FAVORITE) return
+        if (viewModel.currentView != ViewStatus.FAVORITE) return
         initObserverData()
         with(viewModel) {
             localMovieList.observe(viewLifecycleOwner, Observer { items ->
@@ -135,6 +135,7 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
 //                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
 //                    return@Observer
 //                }
+                if(currentView == ViewStatus.HOME) return@Observer
                 updateMovieList(items)
             })
             requestLocalMovies()
@@ -144,15 +145,15 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
     override fun onClick(view: View?) {
         when(view?.id){
             R.id.view_movie_home ->{
-                if (viewModel.currentView == HOME) return
-                viewModel.currentView = HOME
-                changeBottomTabBar(HOME)
+                if (viewModel.currentView == ViewStatus.HOME) return
+                viewModel.currentView = ViewStatus.HOME
+                changeBottomTabBar(ViewStatus.HOME)
                 setRemoteItemsObserver()
             }
             R.id.view_movie_favorite ->{
-                if (viewModel.currentView == FAVORITE) return
-                viewModel.currentView = FAVORITE
-                changeBottomTabBar(FAVORITE)
+                if (viewModel.currentView == ViewStatus.FAVORITE) return
+                viewModel.currentView = ViewStatus.FAVORITE
+                changeBottomTabBar(ViewStatus.FAVORITE)
                 setLocalItemsObserver()
             }
         }

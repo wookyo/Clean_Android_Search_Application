@@ -27,10 +27,15 @@ class MovieSearchViewModel @Inject constructor(
     private val networkManager: NetworkManager,
 ) : BaseViewModel() {
 
-    companion object {
-        const val HOME = 100
-        const val FAVORITE = 101
+    enum class ViewStatus {
+        HOME,
+        FAVORITE
     }
+
+
+    // view 상태
+    var currentView = ViewStatus.HOME
+
     // 현재 검색어
     private var currentQuery: String = ""
 
@@ -49,8 +54,7 @@ class MovieSearchViewModel @Inject constructor(
     private val _localMovieList = MutableLiveData<ArrayList<Movie>>()
     val localMovieList: LiveData<ArrayList<Movie>> get() = _localMovieList
 
-    // view 상태
-    var currentView = HOME
+
 
     val job = SupervisorJob()
 
