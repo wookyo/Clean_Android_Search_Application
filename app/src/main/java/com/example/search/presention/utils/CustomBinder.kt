@@ -43,15 +43,3 @@ fun TextView.setHtmlText(html: String) {
     text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
 }
 
-@BindingAdapter("endlessScroll")
-fun RecyclerView.setEndlessScroll(
-    viewModel: MovieSearchViewModel
-) {
-    val scrollListener =
-        object : EndlessRecyclerViewScrollListener(layoutManager as LinearLayoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                viewModel.requestPagingMovie(totalItemsCount + 1)
-            }
-        }
-    addOnScrollListener(scrollListener)
-}

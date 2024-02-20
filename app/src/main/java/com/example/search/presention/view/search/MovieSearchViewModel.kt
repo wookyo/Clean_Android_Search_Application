@@ -37,10 +37,11 @@ class MovieSearchViewModel @Inject constructor(
     var currentView = ViewStatus.HOME
 
     // 현재 검색어
-    private var currentQuery: String = ""
+    private var currentQuery: String? = null
 
     val query = MutableLiveData<String>()
-    var offset:Int = 0
+
+    var offset:Int = 1
 
     // 검색어 visible list
     private val _movieList = MutableLiveData<ArrayList<Movie>>()
@@ -54,58 +55,63 @@ class MovieSearchViewModel @Inject constructor(
     private val _localMovieList = MutableLiveData<ArrayList<Movie>>()
     val localMovieList: LiveData<ArrayList<Movie>> get() = _localMovieList
 
-
-
     val job = SupervisorJob()
 
     fun requestRemoteMovie() {
-        LogUtils.d("TESTER", "[requestRemoteMovie] ")
-        currentQuery = query.value.toString().trim()
-        if (currentQuery.isEmpty()) {
+        LogUtils.d("TESTER", "[requestRemoteMovie]")
+
+        currentQuery = query.value?.trim()
+        if (currentQuery.isNullOrEmpty()) {
             return
         }
         if (!checkNetworkState()) return
-
         viewModelScope.launch {
-            getMoviesUseCase.getFlowData(currentQuery)
-                .onStart { showProgress() }
-                .onCompletion { hideProgress() }
-                .catch {excetion ->
-                    hideProgress()
-                    excetion.printStackTrace()
-                }
-                .collect { movies ->
-                    LogUtils.e("TESTER", "[requestRemoteMovie] : "+movies)
-                    hideProgress()
-                    _movieList.value = movies as ArrayList<Movie>
-                }
+            currentQuery?.let {
+                getMoviesUseCase.getFlowData(it)
+                    .onStart { showProgress() }
+                    .onCompletion { hideProgress() }
+                    .catch {excetion ->
+                        hideProgress()
+                        excetion.printStackTrace()
+                    }
+                    .collect { movies ->
+                        LogUtils.e("TESTER", "[requestRemoteMovie] : "+movies)
+                        hideProgress()
+                        _movieList.value = movies as ArrayList<Movie>
+                    }
+            }
         }
     }
 
-    fun requestPagingMovie(offset: Int) {
-        LogUtils.d("TESTER", "[requestPagingMovie] :"+offset)
-        if (!checkNetworkState()) return
+    fun requestPagingMovie(index: Int) {
+        LogUtils.d("TESTER", "[requestPagingMovie] ")
 
+        if (!checkNetworkState()) return
+        if (currentQuery.isNullOrEmpty()) return
+        offset = index
+
+        LogUtils.d("TESTER", "[requestPagingMovie] :"+offset)
         viewModelScope.launch {
-            getMoviesUseCase.getFlowData(currentQuery, offset)
-                .onStart { showProgress() }
-                .onCompletion { hideProgress() }
-                .catch { excetion ->
-                    hideProgress()
-                    excetion.printStackTrace()
-                }
-                .collect { movies ->
-                    LogUtils.e("TESTER", "[requestPagingMovie] :"+movies)
-                    hideProgress()
-                    val pagingMovieList = _movieList.value
-                    pagingMovieList?.addAll(movies)
-                    _movieList.value = pagingMovieList!!
-                }
+            currentQuery?.let {
+                getMoviesUseCase.getFlowData(it, offset)
+                    .onStart { showProgress() }
+                    .onCompletion { hideProgress() }
+                    .catch { excetion ->
+                        hideProgress()
+                        excetion.printStackTrace()
+                    }
+                    .collect { movies ->
+                        LogUtils.e("TESTER", "[requestPagingMovie] :"+movies)
+                        hideProgress()
+                        val pagingMovieList = _movieList.value
+                        pagingMovieList?.addAll(movies)
+                        _movieList.value = pagingMovieList!!
+                    }
+            }
         }
     }
 
      fun requestLocalMovies() {
-         LogUtils.d("TESTER", "[requestLocalMovies] ")
         viewModelScope.launch {
             getLocalMoviesUseCase.getLocalAllMovies()
                 .onStart { showProgress() }
@@ -138,8 +144,9 @@ class MovieSearchViewModel @Inject constructor(
     private fun checkNetworkState(): Boolean {
         return networkManager.checkNetworkState()
     }
-    fun resetRemoteItemOffsetInfo() {
+    fun resetVisibleItemInfo() {
         this.offset = 0
+        _movieList.value =  arrayListOf()
     }
 
     fun updateMovieList(list: ArrayList<Movie>){

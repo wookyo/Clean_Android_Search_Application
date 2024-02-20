@@ -5,14 +5,19 @@ import android.content.DialogInterface
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.search.R
 import com.example.search.databinding.FragmentMovieSearchBinding
 import com.example.search.presention.base.BaseBindingFragment
+import com.example.search.presention.utils.EndlessRecyclerViewScrollListener
 import com.example.search.presention.utils.ItemMoveCallback
 import com.example.search.presention.view.search.MovieSearchViewModel.ViewStatus
 import com.example.search.presention.utils.LogUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), View.OnClickListener {
@@ -21,6 +26,20 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
 
     private val viewModel: MovieSearchViewModel by viewModels()
 
+//    private var scrollListener: EndlessRecyclerViewScrollListener? = null
+      private var scrollListener = object : RecyclerView.OnScrollListener() {
+    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        super.onScrolled(recyclerView, dx, dy)
+        val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
+        val itemTotalCount = recyclerView.adapter!!.itemCount
+        if (lastVisibleItemPosition >= itemTotalCount - 1) {
+            if (viewModel.offset * 10 < itemTotalCount) {
+                LogUtils.e("TESTER", "[onScrolled] > MORE : "+viewModel.offset)
+                viewModel.requestPagingMovie(viewModel.offset + 1)
+            }
+        }
+    }
+}
     companion object {
         fun newInstance(): MovieSearchFragment {
             return MovieSearchFragment()
@@ -36,9 +55,33 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
         binding?.let {
             it.model = viewModel
             it.clickListener = this
+
+//            scrollListener = object : EndlessRecyclerViewScrollListener(it.rvMovies.layoutManager as LinearLayoutManager) {
+//                override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+//                    LogUtils.e("TESTER", "[setEndlessScroll] : "+viewModel.currentView
+//                            +" / "+viewModel.offset)
+//                    viewModel.requestPagingMovie(viewModel.offset + 1)
+//                }
+//            }
         }
         initObserver()
         initAdapter()
+        initScrollListener()
+    }
+
+    private fun initScrollListener() {
+        when (viewModel.currentView) {
+            ViewStatus.HOME -> {
+                scrollListener?.let {
+                    binding?.rvMovies?.addOnScrollListener(it)
+                }
+            }
+            ViewStatus.FAVORITE -> {
+                scrollListener?.let {
+                    binding?.rvMovies?.removeOnScrollListener(it)
+                }
+            }
+        }
     }
 
     private fun initAdapter() {
@@ -86,56 +129,48 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
             movieList.observe(viewLifecycleOwner, Observer { items ->
                 LogUtils.e("TESTER", "[initObserver] : "+items)
                 movieAdapter.setMovieList(items)
-//                if( items.isNullOrEmpty()){
-//                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
-//                }else {
-//                    movieAdapter.setMovieList(items)
-//                }
             })
         }
     }
 
     private fun initObserverData() {
         with(viewModel) {
-            if( remoteMovieList.hasObservers()){
+            if (remoteMovieList.hasObservers()) {
                 remoteMovieList.removeObservers(viewLifecycleOwner)
             }
-            if( localMovieList.hasObservers()){
+            if (localMovieList.hasObservers()) {
                 localMovieList.removeObservers(viewLifecycleOwner)
             }
         }
         movieAdapter.clearData()
-        viewModel.resetRemoteItemOffsetInfo()
+        movieAdapter.notifyDataSetChanged()
+        viewModel.resetVisibleItemInfo()
     }
 
-    private fun setRemoteItemsObserver(){
-        if (viewModel.currentView != ViewStatus.HOME) return
+    private fun setRemoteItemsObserver() {
+        LogUtils.d("TESTER", "[setRemoteItemsObserver]")
         initObserverData()
+        initScrollListener()
         with(viewModel) {
-        remoteMovieList.observe(viewLifecycleOwner, Observer { items ->
-            LogUtils.e("TESTER", "[setRemoteItemsObserver] : "+items)
-//                if( items.isNullOrEmpty()){
-//                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
-//                    return@Observer
-//                }
-            if(currentView == ViewStatus.FAVORITE) return@Observer
-            updateMovieList(items)
+            remoteMovieList.observe(viewLifecycleOwner, Observer { items ->
+                LogUtils.e("TESTER", "[setRemoteItemsObserver] : " + items)
+                if (currentView == ViewStatus.FAVORITE) return@Observer
+                updateMovieList(items)
             })
-        requestRemoteMovie()
+            scrollListener?.let {
+                binding?.rvMovies?.addOnScrollListener(it)
+            }
+            requestRemoteMovie()
         }
     }
 
-    private fun setLocalItemsObserver(){
-        if (viewModel.currentView != ViewStatus.FAVORITE) return
+    private fun setLocalItemsObserver() {
         initObserverData()
+        initScrollListener()
         with(viewModel) {
             localMovieList.observe(viewLifecycleOwner, Observer { items ->
-                LogUtils.e("TESTER", "[localMovieList] : "+items)
-//                if( items.isNullOrEmpty()){
-//                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
-//                    return@Observer
-//                }
-                if(currentView == ViewStatus.HOME) return@Observer
+                LogUtils.e("TESTER", "[localMovieList] : " + items)
+                if (currentView == ViewStatus.HOME) return@Observer
                 updateMovieList(items)
             })
             requestLocalMovies()
