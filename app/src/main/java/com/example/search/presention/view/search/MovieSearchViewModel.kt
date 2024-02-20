@@ -8,6 +8,7 @@ import com.example.domain.usecase.movie.GetLocalMoviesUseCase
 import com.example.domain.usecase.movie.GetMoviesUseCase
 
 import com.example.search.presention.base.BaseViewModel
+import com.example.search.presention.utils.LogUtils
 import com.example.search.presention.utils.NetworkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -48,27 +49,15 @@ class MovieSearchViewModel @Inject constructor(
     private val _localMovieList = MutableLiveData<ArrayList<Movie>>()
     val localMovieList: LiveData<ArrayList<Movie>> get() = _localMovieList
 
-
-    // 검색 결과에 따른 toast 메세지.
-    private val _toastMsg = MutableLiveData<MessageSet>()
-    val toastMsg: LiveData<MessageSet> get() = _toastMsg
-
     // view 상태
     var currentView = HOME
 
     val job = SupervisorJob()
 
-    enum class MessageSet {
-        EMPTY_QUERY,
-        ERROR,
-        SUCCESS,
-        NO_RESULT
-    }
-
     fun requestRemoteMovie() {
+        LogUtils.d("TESTER", "[requestRemoteMovie] ")
         currentQuery = query.value.toString().trim()
         if (currentQuery.isEmpty()) {
-            _toastMsg.value = MessageSet.EMPTY_QUERY
             return
         }
         if (!checkNetworkState()) return
@@ -77,58 +66,55 @@ class MovieSearchViewModel @Inject constructor(
             getMoviesUseCase.getFlowData(currentQuery)
                 .onStart { showProgress() }
                 .onCompletion { hideProgress() }
-                .catch {
-                    _toastMsg.value = MessageSet.ERROR
+                .catch {excetion ->
+                    hideProgress()
+                    excetion.printStackTrace()
                 }
                 .collect { movies ->
-                    if (movies.isEmpty()) {
-                        _toastMsg.value = MessageSet.NO_RESULT
-                    } else {
-                        _movieList.value = movies as ArrayList<Movie>
-                        _toastMsg.value = MessageSet.SUCCESS
-                    }
+                    LogUtils.e("TESTER", "[requestRemoteMovie] : "+movies)
+                    hideProgress()
+                    _movieList.value = movies as ArrayList<Movie>
                 }
         }
     }
 
     fun requestPagingMovie(offset: Int) {
+        LogUtils.d("TESTER", "[requestPagingMovie] :"+offset)
         if (!checkNetworkState()) return
 
         viewModelScope.launch {
             getMoviesUseCase.getFlowData(currentQuery, offset)
                 .onStart { showProgress() }
                 .onCompletion { hideProgress() }
-                .catch {
-                    _toastMsg.value = MessageSet.ERROR
+                .catch { excetion ->
+                    hideProgress()
+                    excetion.printStackTrace()
                 }
                 .collect { movies ->
-                    if (movies.isEmpty()) {
-                        _toastMsg.value = MessageSet.NO_RESULT
-                    } else {
-                        val pagingMovieList = _movieList.value
-                        pagingMovieList?.addAll(movies)
-                        _movieList.value = pagingMovieList!!
-                        _toastMsg.value = MessageSet.SUCCESS
-                    }
+                    LogUtils.e("TESTER", "[requestPagingMovie] :"+movies)
+                    hideProgress()
+                    val pagingMovieList = _movieList.value
+                    pagingMovieList?.addAll(movies)
+                    _movieList.value = pagingMovieList!!
                 }
         }
     }
 
      fun requestLocalMovies() {
+         LogUtils.d("TESTER", "[requestLocalMovies] ")
         viewModelScope.launch {
             getLocalMoviesUseCase.getLocalAllMovies()
                 .onStart { showProgress() }
-                .onCompletion { hideProgress() }
-                .catch {
-                    _toastMsg.value = MessageSet.ERROR
+                .onCompletion {
+                    hideProgress() }
+                .catch {excetion ->
+                    hideProgress()
+                    excetion.printStackTrace()
                 }
                 .collect { movies ->
-                    if (movies.isEmpty()) {
-                        _toastMsg.value = MessageSet.NO_RESULT
-                    } else {
-                        _movieList.value = movies as ArrayList<Movie>
-                        _toastMsg.value = MessageSet.SUCCESS
-                    }
+                    LogUtils.e("TESTER", "[requestLocalMovies] : "+movies)
+                    hideProgress()
+                    _movieList.value = movies as ArrayList<Movie>
                 }
         }
     }

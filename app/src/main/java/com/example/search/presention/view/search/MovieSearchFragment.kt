@@ -85,11 +85,13 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
     private fun initObserver() {
         with(viewModel) {
             movieList.observe(viewLifecycleOwner, Observer { items ->
-                if( items.isNullOrEmpty()){
-                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
-                }else {
-                    movieAdapter.setMovieList(items)
-                }
+                LogUtils.e("TESTER", "[initObserver] : "+items)
+                movieAdapter.setMovieList(items)
+//                if( items.isNullOrEmpty()){
+//                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
+//                }else {
+//                    movieAdapter.setMovieList(items)
+//                }
             })
         }
     }
@@ -112,10 +114,11 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
         initObserverData()
         with(viewModel) {
         remoteMovieList.observe(viewLifecycleOwner, Observer { items ->
-                if( items.isNullOrEmpty()){
-                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
-                    return@Observer
-                }
+            LogUtils.e("TESTER", "[setRemoteItemsObserver] : "+items)
+//                if( items.isNullOrEmpty()){
+//                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
+//                    return@Observer
+//                }
             updateMovieList(items)
             })
         requestRemoteMovie()
@@ -127,10 +130,11 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
         initObserverData()
         with(viewModel) {
             localMovieList.observe(viewLifecycleOwner, Observer { items ->
-                if( items.isNullOrEmpty()){
-                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
-                    return@Observer
-                }
+                LogUtils.e("TESTER", "[localMovieList] : "+items)
+//                if( items.isNullOrEmpty()){
+//                    showToast(requireContext(), getString(R.string.no_movie_error_msg))
+//                    return@Observer
+//                }
                 updateMovieList(items)
             })
             requestLocalMovies()
