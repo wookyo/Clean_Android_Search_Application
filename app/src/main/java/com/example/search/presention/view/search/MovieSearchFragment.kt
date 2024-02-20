@@ -12,6 +12,7 @@ import com.example.search.R
 import com.example.search.databinding.FragmentMovieSearchBinding
 import com.example.search.presention.base.BaseBindingFragment
 import com.example.search.presention.utils.ItemMoveCallback
+import com.example.search.presention.utils.LogUtils
 import com.example.search.presention.view.search.MovieSearchViewModel.ViewStatus
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,8 +31,14 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
             val lastVisibleItemPosition =
                 (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
             val itemTotalCount = recyclerView.adapter!!.itemCount
+
+            LogUtils.d("TESTER", "[onScrolled] > MORE : " + viewModel.offset
+                    +" / "+lastVisibleItemPosition
+                    +" / "+itemTotalCount)
+
             if (lastVisibleItemPosition >= itemTotalCount - 1) {
-                if (viewModel.offset * 10 < itemTotalCount) {
+                if (viewModel.offset * 10 <= itemTotalCount) {
+                    LogUtils.e("TESTER", "[onScrolled] > requestPagingMovie EVENT " )
                     viewModel.requestPagingMovie(viewModel.offset + 1)
                 }
             }
@@ -164,6 +171,20 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
 
     override fun onClick(view: View?) {
         when(view?.id){
+            R.id.btn_search ->{
+                with(viewModel){
+                    currentQuery?.let {currentText ->
+                        if(currentText != query.value?.trim()){
+                            LogUtils.d("TESTER", "[onClick] > resetVisibleItemInfo  " )
+                            movieAdapter.clearData()
+                            movieAdapter.notifyDataSetChanged()
+                            viewModel.resetVisibleItemInfo()
+                        }
+                    }
+                    requestRemoteMovie()
+                }
+
+            }
             R.id.view_movie_home ->{
                 if (viewModel.currentView == ViewStatus.HOME) return
                 viewModel.currentView = ViewStatus.HOME

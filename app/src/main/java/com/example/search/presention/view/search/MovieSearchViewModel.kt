@@ -37,7 +37,7 @@ class MovieSearchViewModel @Inject constructor(
     var currentView = ViewStatus.HOME
 
     // 현재 검색어
-    private var currentQuery: String? = null
+     var currentQuery: String? = null
 
     val query = MutableLiveData<String>()
 
