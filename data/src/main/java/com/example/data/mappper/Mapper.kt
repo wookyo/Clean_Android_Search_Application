@@ -10,7 +10,8 @@ fun mapperToMovie(movies: List<MovieEntity>): List<Movie> {
             it.year,
             it.imdbID,
             it.type,
-            it.poster
+            it.poster,
+            it.isFavorite
         )
     }
 }

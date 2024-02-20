@@ -6,5 +6,5 @@ data class Movie(
     val imdbID: String,
     val type: String,
     val poster: String,
-    var isFavorite:Boolean = false
+    var isFavorite:Boolean
 )

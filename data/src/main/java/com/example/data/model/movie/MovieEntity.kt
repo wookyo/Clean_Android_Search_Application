@@ -24,7 +24,9 @@ data class MovieEntity(
     var type: String = "",
 
     @SerializedName("Poster")
-    var poster: String = ""
+    var poster: String = "",
+
+    var isFavorite:Boolean = false
 ){
 
     constructor(movie: Movie) : this() {
@@ -37,6 +39,7 @@ data class MovieEntity(
         movie.imdbID.let { this.imdbID = it }
         movie.type.let { this.type = it }
         movie.poster.let { this.poster = it }
+        movie.isFavorite.let { this.isFavorite = it }
     }
 }
 
