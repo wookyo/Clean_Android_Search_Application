@@ -5,17 +5,15 @@ import android.content.DialogInterface
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.search.R
 import com.example.search.databinding.FragmentMovieSearchBinding
 import com.example.search.presention.base.BaseBindingFragment
-import com.example.search.presention.utils.EndlessRecyclerViewScrollListener
 import com.example.search.presention.utils.ItemMoveCallback
 import com.example.search.presention.view.search.MovieSearchViewModel.ViewStatus
-import com.example.search.presention.utils.LogUtils
+
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
@@ -26,20 +24,19 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
 
     private val viewModel: MovieSearchViewModel by viewModels()
 
-//    private var scrollListener: EndlessRecyclerViewScrollListener? = null
-      private var scrollListener = object : RecyclerView.OnScrollListener() {
-    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        super.onScrolled(recyclerView, dx, dy)
-        val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
-        val itemTotalCount = recyclerView.adapter!!.itemCount
-        if (lastVisibleItemPosition >= itemTotalCount - 1) {
-            if (viewModel.offset * 10 < itemTotalCount) {
-                LogUtils.e("TESTER", "[onScrolled] > MORE : "+viewModel.offset)
-                viewModel.requestPagingMovie(viewModel.offset + 1)
+    private var scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val lastVisibleItemPosition =
+                (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
+            val itemTotalCount = recyclerView.adapter!!.itemCount
+            if (lastVisibleItemPosition >= itemTotalCount - 1) {
+                if (viewModel.offset * 10 < itemTotalCount) {
+                    viewModel.requestPagingMovie(viewModel.offset + 1)
+                }
             }
         }
     }
-}
     companion object {
         fun newInstance(): MovieSearchFragment {
             return MovieSearchFragment()
@@ -55,14 +52,6 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
         binding?.let {
             it.model = viewModel
             it.clickListener = this
-
-//            scrollListener = object : EndlessRecyclerViewScrollListener(it.rvMovies.layoutManager as LinearLayoutManager) {
-//                override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-//                    LogUtils.e("TESTER", "[setEndlessScroll] : "+viewModel.currentView
-//                            +" / "+viewModel.offset)
-//                    viewModel.requestPagingMovie(viewModel.offset + 1)
-//                }
-//            }
         }
         initObserver()
         initAdapter()
@@ -127,7 +116,6 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
     private fun initObserver() {
         with(viewModel) {
             movieList.observe(viewLifecycleOwner, Observer { items ->
-                LogUtils.e("TESTER", "[initObserver] : "+items)
                 movieAdapter.setMovieList(items)
             })
         }
@@ -148,12 +136,10 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
     }
 
     private fun setRemoteItemsObserver() {
-        LogUtils.d("TESTER", "[setRemoteItemsObserver]")
         initObserverData()
         initScrollListener()
         with(viewModel) {
             remoteMovieList.observe(viewLifecycleOwner, Observer { items ->
-                LogUtils.e("TESTER", "[setRemoteItemsObserver] : " + items)
                 if (currentView == ViewStatus.FAVORITE) return@Observer
                 updateMovieList(items)
             })
@@ -169,7 +155,6 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
         initScrollListener()
         with(viewModel) {
             localMovieList.observe(viewLifecycleOwner, Observer { items ->
-                LogUtils.e("TESTER", "[localMovieList] : " + items)
                 if (currentView == ViewStatus.HOME) return@Observer
                 updateMovieList(items)
             })
