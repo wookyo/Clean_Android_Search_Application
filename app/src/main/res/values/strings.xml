@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">CleanArchitectureStudy</string>
     <string name="go_to_main">한번 더 누르시면 Main으로 이동합니다.</string>
-    <string name="splash_text">Splash Activity</string>
+    <string name="splash_text">연결 중입니다</string>
 
     <string name="search_input_query_msg">검색어를 입력해주세요</string>
     <string name="network_error_msg">네트워크를 연결해주세요.</string>
     <string name="load_movie_success_msg">영화를 불러왔습니다.</string>
-    <string name="no_movie_error_msg">해당 영화는 존재하지 않습니다.</string>
+    <string name="no_movie_error_msg">검색 결과가 없습니다</string>
     <string name="last_page_msg">마지막 페이지 입니다</string>
     <string name="wait_toast">잠시만 기다려주세요.</string>
     <string name="auto_login_msg">자동 로그인</string>
