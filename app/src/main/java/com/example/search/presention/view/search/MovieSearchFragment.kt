@@ -145,9 +145,6 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
                 if (viewModel.currentView == ViewStatus.FAVORITE) return@Observer
                 viewModel.updateMovieList(items)
             })
-            scrollListener.let {
-                binding?.rvMovies?.addOnScrollListener(it)
-            }
             viewModel.requestRemoteMovie()
         }
     }
