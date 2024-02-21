@@ -14,10 +14,8 @@ class IntroActivity: BaseBindingActivity<ActivityIntroBinding>() {
         return R.layout.activity_intro
     }
 
-
     override fun initData() {
     }
-
 
     override fun initView(viewDataBinding: ActivityIntroBinding) {
         if(isNetworkAvailable(this)){

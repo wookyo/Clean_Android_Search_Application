@@ -7,11 +7,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface MovieLocalDataSource {
     fun insertMovies(movies: List<MovieEntity>): Completable
+
     fun getAllMovies(): Flow<List<MovieEntity>>
+
     fun getSearchMovies(title: String): Flow<List<MovieEntity>>
+
     fun deleteAllMovies(): Completable
 
-     fun deletelMovie(item: MovieEntity): Int
+    fun deletelMovie(item: MovieEntity): Int
 
-     fun insertMovie(item: MovieEntity):Long
+    fun insertMovie(item: MovieEntity): Long
 }
