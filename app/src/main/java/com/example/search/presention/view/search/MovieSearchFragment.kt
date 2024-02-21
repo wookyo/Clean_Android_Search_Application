@@ -34,8 +34,8 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(),
             super.onScrolled(recyclerView, dx, dy)
             val lastVisibleItemPosition =
                 (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
-            val itemTotalCount = recyclerView.adapter!!.itemCount
-            if (lastVisibleItemPosition >= itemTotalCount - 1) {
+            val itemTotalCount = recyclerView.adapter!!.itemCount-1
+            if (lastVisibleItemPosition == itemTotalCount) {
                 with(viewModel){
                     if (currentView != ViewStatus.FAVORITE
                         && offset * 10 <= itemTotalCount) {
