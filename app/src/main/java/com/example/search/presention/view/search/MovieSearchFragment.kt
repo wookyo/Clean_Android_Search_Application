@@ -1,8 +1,10 @@
 package com.example.search.presention.view.search
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -54,10 +56,17 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
             it.model = viewModel
             it.clickListener = this
         }
+        showKeyboardFirst()
         initObserver()
         initAdapter()
         initScrollListener()
         setRemoteItemsObserver()
+    }
+
+    private fun showKeyboardFirst() {
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+        binding?.etInput?.requestFocus()
     }
 
     private fun initScrollListener() {
