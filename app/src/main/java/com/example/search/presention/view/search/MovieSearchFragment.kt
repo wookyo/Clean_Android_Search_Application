@@ -13,9 +13,7 @@ import com.example.search.databinding.FragmentMovieSearchBinding
 import com.example.search.presention.base.BaseBindingFragment
 import com.example.search.presention.utils.ItemMoveCallback
 import com.example.search.presention.view.search.MovieSearchViewModel.ViewStatus
-
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.abs
 
 @AndroidEntryPoint
 class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), View.OnClickListener {
@@ -31,8 +29,11 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
                 (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
             val itemTotalCount = recyclerView.adapter!!.itemCount
             if (lastVisibleItemPosition >= itemTotalCount - 1) {
-                if (viewModel.offset * 10 <= itemTotalCount) {
-                    viewModel.requestPagingMovie(viewModel.offset + 1)
+                with(viewModel){
+                    if (currentView != ViewStatus.FAVORITE
+                        && offset * 10 <= itemTotalCount) {
+                        requestPagingMovie(offset + 1)
+                    }
                 }
             }
         }
@@ -56,6 +57,7 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
         initObserver()
         initAdapter()
         initScrollListener()
+        setRemoteItemsObserver()
     }
 
     private fun initScrollListener() {
@@ -140,13 +142,13 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
         initScrollListener()
         with(viewModel) {
             remoteMovieList.observe(viewLifecycleOwner, Observer { items ->
-                if (currentView == ViewStatus.FAVORITE) return@Observer
-                updateMovieList(items)
+                if (viewModel.currentView == ViewStatus.FAVORITE) return@Observer
+                viewModel.updateMovieList(items)
             })
             scrollListener?.let {
                 binding?.rvMovies?.addOnScrollListener(it)
             }
-            requestRemoteMovie()
+            viewModel.requestRemoteMovie()
         }
     }
 
