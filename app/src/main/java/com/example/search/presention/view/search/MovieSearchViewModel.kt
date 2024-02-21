@@ -8,7 +8,6 @@ import com.example.domain.usecase.movie.GetLocalMoviesUseCase
 import com.example.domain.usecase.movie.GetMoviesUseCase
 
 import com.example.search.presention.base.BaseViewModel
-import com.example.search.presention.utils.LogUtils
 import com.example.search.presention.utils.NetworkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -61,7 +60,6 @@ class MovieSearchViewModel @Inject constructor(
     val job = SupervisorJob()
 
     fun requestRemoteMovie() {
-        LogUtils.e("TESTER", "[requestRemoteMovie]")
         if (currentQuery.isNullOrEmpty()) {
             return
         }
@@ -77,7 +75,6 @@ class MovieSearchViewModel @Inject constructor(
                         excetion.printStackTrace()
                     }
                     .collect { movies ->
-                        LogUtils.e("TESTER", "[requestRemoteMovie] : "+movies)
                         hideProgress()
                         _remoteMovieList.value = movies as ArrayList<Movie>
                     }
@@ -86,8 +83,6 @@ class MovieSearchViewModel @Inject constructor(
     }
 
     fun requestPagingMovie(index: Int) {
-        LogUtils.e("TESTER", "[requestPagingMovie] : "+index)
-
         if (!checkNetworkState()) return
         if (currentQuery.isNullOrEmpty()) return
         offset = index
@@ -102,7 +97,6 @@ class MovieSearchViewModel @Inject constructor(
                         excetion.printStackTrace()
                     }
                     .collect { movies ->
-                        LogUtils.e("TESTER", "[requestPagingMovie] : "+movies)
                         hideProgress()
                         val pagingMovieList = _movieList.value
                         pagingMovieList?.addAll(movies)
@@ -113,9 +107,7 @@ class MovieSearchViewModel @Inject constructor(
     }
 
      fun requestLocalMovies() {
-         LogUtils.e("TESTER", "[requestLocalMovies]")
-
-        viewModelScope.launch {
+         viewModelScope.launch {
             getLocalMoviesUseCase.getLocalAllMovies()
                 .onStart { showProgress() }
                 .onCompletion {
@@ -125,7 +117,6 @@ class MovieSearchViewModel @Inject constructor(
                     excetion.printStackTrace()
                 }
                 .collect { movies ->
-                    LogUtils.e("TESTER", "[requestLocalMovies] : "+movies)
                     hideProgress()
                     _localMovieList.value = movies as ArrayList<Movie>
                 }

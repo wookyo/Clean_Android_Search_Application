@@ -1,15 +1,11 @@
 package com.example.data.repository.search
 
-import com.example.data.api.KtorInterface
 import com.example.data.mappper.mapperToMovie
 import com.example.data.model.movie.MovieEntity
-
 import com.example.data.repository.search.local.MovieLocalDataSource
 import com.example.data.repository.search.remote.MovieRemoteDataSource
 import com.example.domain.model.Movie
 import com.example.domain.repository.MovieRepository
-import io.reactivex.Flowable
-import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

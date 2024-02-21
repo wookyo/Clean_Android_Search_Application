@@ -1,16 +1,9 @@
 package com.example.search.presention.view.search
 
-import android.content.Intent
-import android.net.Uri
-import androidx.activity.viewModels
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.search.R
 import com.example.search.databinding.ActivityMovieSearchBinding
 import com.example.search.presention.base.BaseBindingActivity
 import com.example.search.presention.utils.ActivityUtils
-import com.example.search.presention.utils.ItemMoveCallback
-import com.example.search.presention.utils.LogUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
