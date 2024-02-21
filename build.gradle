@@ -5,9 +5,9 @@ buildscript {
         versionCode = 2023042901
 
         // SDK and tools
-        compileSdkVersion = 34
+        compileSdkVersion = 33
         minSdkVersion = 26
-        targetSdkVersion = 34
+        targetSdkVersion = 33
         buildToolsVersion = "30.0.3"
 
         // act version
