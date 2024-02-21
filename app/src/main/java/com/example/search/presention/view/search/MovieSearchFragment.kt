@@ -171,19 +171,18 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
 
     override fun onClick(view: View?) {
         when(view?.id){
-            R.id.btn_search ->{
-                with(viewModel){
-                    currentQuery?.let {currentText ->
-                        if(currentText != query.value?.trim()){
-                            LogUtils.d("TESTER", "[onClick] > resetVisibleItemInfo  " )
-                            movieAdapter.clearData()
-                            movieAdapter.notifyDataSetChanged()
-                            viewModel.resetVisibleItemInfo()
+            R.id.btn_search -> {
+                with(viewModel) {
+                    currentQuery?.let { currentText ->
+                        if (currentText == previousQuery) {
+                            return@with
                         }
+                        movieAdapter.clearData()
+                        movieAdapter.notifyDataSetChanged()
+                        viewModel.resetVisibleItemInfo()
+                        requestRemoteMovie()
                     }
-                    requestRemoteMovie()
                 }
-
             }
             R.id.view_movie_home ->{
                 if (viewModel.currentView == ViewStatus.HOME) return

@@ -37,7 +37,11 @@ class MovieSearchViewModel @Inject constructor(
     var currentView = ViewStatus.HOME
 
     // 현재 검색어
-     var currentQuery: String? = null
+    var currentQuery: String? = null
+        get() {
+            return query.value?.trim()
+        }
+    var previousQuery: String? = null
 
     val query = MutableLiveData<String>()
 
@@ -67,6 +71,7 @@ class MovieSearchViewModel @Inject constructor(
         if (!checkNetworkState()) return
         viewModelScope.launch {
             currentQuery?.let {
+                previousQuery = it
                 getMoviesUseCase.getFlowData(it)
                     .onStart { showProgress() }
                     .onCompletion { hideProgress() }
