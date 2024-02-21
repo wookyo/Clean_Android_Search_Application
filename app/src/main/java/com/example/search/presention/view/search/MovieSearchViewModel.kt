@@ -8,7 +8,6 @@ import com.example.domain.usecase.movie.GetLocalMoviesUseCase
 import com.example.domain.usecase.movie.GetMoviesUseCase
 
 import com.example.search.presention.base.BaseViewModel
-import com.example.search.presention.utils.LogUtils
 import com.example.search.presention.utils.NetworkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +30,6 @@ class MovieSearchViewModel @Inject constructor(
         HOME,
         FAVORITE
     }
-
 
     // view 상태
     var currentView = ViewStatus.HOME
@@ -62,9 +60,6 @@ class MovieSearchViewModel @Inject constructor(
     val job = SupervisorJob()
 
     fun requestRemoteMovie() {
-        LogUtils.d("TESTER", "[requestRemoteMovie]")
-
-        currentQuery = query.value?.trim()
         if (currentQuery.isNullOrEmpty()) {
             return
         }
@@ -80,7 +75,6 @@ class MovieSearchViewModel @Inject constructor(
                         excetion.printStackTrace()
                     }
                     .collect { movies ->
-                        LogUtils.e("TESTER", "[requestRemoteMovie] : "+movies)
                         hideProgress()
                         _movieList.value = movies as ArrayList<Movie>
                     }
@@ -89,13 +83,10 @@ class MovieSearchViewModel @Inject constructor(
     }
 
     fun requestPagingMovie(index: Int) {
-        LogUtils.d("TESTER", "[requestPagingMovie] ")
-
         if (!checkNetworkState()) return
         if (currentQuery.isNullOrEmpty()) return
         offset = index
 
-        LogUtils.d("TESTER", "[requestPagingMovie] :"+offset)
         viewModelScope.launch {
             currentQuery?.let {
                 getMoviesUseCase.getFlowData(it, offset)
@@ -106,7 +97,6 @@ class MovieSearchViewModel @Inject constructor(
                         excetion.printStackTrace()
                     }
                     .collect { movies ->
-                        LogUtils.e("TESTER", "[requestPagingMovie] :"+movies)
                         hideProgress()
                         val pagingMovieList = _movieList.value
                         pagingMovieList?.addAll(movies)
@@ -127,7 +117,6 @@ class MovieSearchViewModel @Inject constructor(
                     excetion.printStackTrace()
                 }
                 .collect { movies ->
-                    LogUtils.e("TESTER", "[requestLocalMovies] : "+movies)
                     hideProgress()
                     _movieList.value = movies as ArrayList<Movie>
                 }
