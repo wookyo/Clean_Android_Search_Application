@@ -63,12 +63,12 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
     private fun initScrollListener() {
         when (viewModel.currentView) {
             ViewStatus.HOME -> {
-                scrollListener?.let {
+                scrollListener.let {
                     binding?.rvMovies?.addOnScrollListener(it)
                 }
             }
             ViewStatus.FAVORITE -> {
-                scrollListener?.let {
+                scrollListener.let {
                     binding?.rvMovies?.removeOnScrollListener(it)
                 }
             }
@@ -145,7 +145,7 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
                 if (viewModel.currentView == ViewStatus.FAVORITE) return@Observer
                 viewModel.updateMovieList(items)
             })
-            scrollListener?.let {
+            scrollListener.let {
                 binding?.rvMovies?.addOnScrollListener(it)
             }
             viewModel.requestRemoteMovie()
