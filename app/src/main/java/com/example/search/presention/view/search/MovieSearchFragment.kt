@@ -3,8 +3,11 @@ package com.example.search.presention.view.search
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -18,7 +21,9 @@ import com.example.search.presention.view.search.MovieSearchViewModel.ViewStatus
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), View.OnClickListener {
+class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(),
+    View.OnClickListener,
+    TextView.OnEditorActionListener {
 
     private lateinit var movieAdapter: MovieAdapter
 
@@ -55,6 +60,7 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
         binding?.let {
             it.model = viewModel
             it.clickListener = this
+            it.etInput.setOnEditorActionListener(this@MovieSearchFragment)
         }
         showKeyboardFirst()
         initObserver()
@@ -198,6 +204,25 @@ class MovieSearchFragment: BaseBindingFragment<FragmentMovieSearchBinding>(), Vi
                 setLocalItemsObserver()
             }
         }
+    }
+
+    override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+        when (actionId){
+            EditorInfo.IME_ACTION_SEARCH ->{
+                with(viewModel) {
+                    currentQuery?.let { currentText ->
+                        if (currentText == previousQuery) {
+                            return@with
+                        }
+                        movieAdapter.clearData()
+                        movieAdapter.notifyDataSetChanged()
+                        viewModel.resetVisibleItemInfo()
+                        requestRemoteMovie()
+                    }
+                }
+            }
+        }
+        return true
     }
 
 }
